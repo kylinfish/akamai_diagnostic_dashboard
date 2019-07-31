@@ -1,0 +1,158 @@
+{% extends "layout.html" %}
+{% block title %}Index{% endblock %}
+{% block breadcrumbactive %}Overview{% endblock %}
+
+{% block toolcards %}
+<div class="row">
+  <div class="col-xl-3 col-sm-6 mb-3">
+    <div class="card text-white bg-primary o-hidden h-100">
+      <div class="card-body">
+        <div class="card-body-icon">
+          <i class="fas fa-fw fa-comments"></i>
+        </div>
+        <div class="mr-5">Error Statistics</div>
+        <div class="mr-5">Used: 5 times</div>
+      </div>
+      <a class="card-footer text-white clearfix small z-1" href="{{ url_for('estats') }}">
+        <span class="float-left">View Details</span>
+        <span class="float-right">
+                  <i class="fas fa-angle-right"></i>
+                </span>
+      </a>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 mb-3">
+    <div class="card text-white bg-warning o-hidden h-100">
+      <div class="card-body">
+        <div class="card-body-icon">
+          <i class="fas fa-fw fa-list"></i>
+        </div>
+        <div class="mr-5">Error Translations</div>
+        <div class="mr-5">Used: 7 times</div>
+      </div>
+      <a class="card-footer text-white clearfix small z-1" href="{{ url_for('dparser') }}">
+        <span class="float-left">View Details</span>
+        <span class="float-right">
+                  <i class="fas fa-angle-right"></i>
+                </span>
+      </a>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 mb-3">
+    <div class="card text-white bg-success o-hidden h-100">
+      <div class="card-body">
+        <div class="card-body-icon">
+          <i class="fas fa-fw fa-shopping-cart"></i>
+        </div>
+        <div class="mr-5">DIG</div>
+        <div class="mr-5">Used: 11 times</div>
+      </div>
+      <a class="card-footer text-white clearfix small z-1" href="{{ url_for('dig') }}">
+        <span class="float-left">View Details</span>
+        <span class="float-right">
+                  <i class="fas fa-angle-right"></i>
+                </span>
+      </a>
+    </div>
+  </div>
+  <!--
+  <div class="col-xl-3 col-sm-6 mb-3">
+    <div class="card text-white bg-danger o-hidden h-100">
+      <div class="card-body">
+        <div class="card-body-icon">
+          <i class="fas fa-fw fa-life-ring"></i>
+        </div>
+        <div class="mr-5">MTR</div>
+        <div class="mr-5">Used: 8 times</div>
+      </div>
+      <a class="card-footer text-white clearfix small z-1" href="{{ url_for('mtr') }}">
+        <span class="float-left">View Details</span>
+        <span class="float-right">
+          <i class="fas fa-angle-right"></i>
+        </span>
+      </a>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 mb-3">
+    <div class="card text-white bg-danger o-hidden h-100">
+      <div class="card-body">
+        <div class="card-body-icon">
+          <i class="fas fa-fw fa-life-ring"></i>
+        </div>
+        <div class="mr-5">cURL</div>
+        <div class="mr-5">Used: 7 times</div>
+      </div>
+      <a class="card-footer text-white clearfix small z-1" href="{{ url_for('curl') }}">
+        <span class="float-left">View Details</span>
+        <span class="float-right">
+          <i class="fas fa-angle-right"></i>
+        </span>
+      </a>
+    </div>
+  </div>
+  -->
+  <div class="col-xl-3 col-sm-6 mb-3">
+    <div class="card text-white bg-danger o-hidden h-100">
+      <div class="card-body">
+        <div class="card-body-icon">
+          <i class="fas fa-fw fa-life-ring"></i>
+        </div>
+        <div class="mr-5">Debug URL</div>
+        <div class="mr-5">Used: 12 times</div>
+      </div>
+      <a class="card-footer text-white clearfix small z-1" href="{{ url_for('debugurl') }}">
+        <span class="float-left">View Details</span>
+        <span class="float-right">
+                  <i class="fas fa-angle-right"></i>
+                </span>
+      </a>
+    </div>
+  </div>
+  <!--
+  <div class="col-xl-3 col-sm-6 mb-3">
+    <div class="card text-white bg-primary o-hidden h-100">
+      <div class="card-body">
+        <div class="card-body-icon">
+          <i class="fas fa-fw fa-search"></i>
+        </div>
+        <div class="mr-5">Get Log Lines</div>
+        <div class="mr-5">Used: 5 times</div>
+      </div>
+      <a class="card-footer text-white clearfix small z-1" href="{{ url_for('viewlogs') }}">
+        <span class="float-left">View Details</span>
+        <span class="float-right">
+          <i class="fas fa-angle-right"></i>
+        </span>
+      </a>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 mb-3">
+    <div class="card text-white bg-warning o-hidden h-100">
+      <div class="card-body">
+        <div class="card-body-icon">
+          <i class="fas fa-fw fa-users"></i>
+        </div>
+        <div class="mr-5">User IP Details</div>
+        <div class="mr-5">Used: 6 times</div>
+      </div>
+      <a class="card-footer text-white clearfix small z-1" href="{{ url_for('ipdetails') }}">
+        <span class="float-left">View Details</span>
+        <span class="float-right">
+          <i class="fas fa-angle-right"></i>
+        </span>
+      </a>
+    </div>
+  </div>
+  -->
+</div>
+  <!-- Area Chart Example-->
+  <div class="card mb-3">
+    <div class="card-header">
+      <i class="fas fa-chart-area"></i>
+      Error statistics</div>
+    <div class="card-body">
+      <canvas id="myAreaChart" width="100%" height="30"></canvas>
+    </div>
+    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+  </div>
+{% endblock %}

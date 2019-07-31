@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+{% block title %}DIG{% endblock %}
+{% block breadcrumbactive %}DIG{% endblock %}
+{% block dig_active %}active{% endblock %}
+{% block intro %}
+<!-- Page Content -->
+<h1>Get Domain Details (DIG)</h1>
+<hr>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fas fa-chart-area"></i>
+        This is Get Domain Details (DIG)
+    </div>
+    <div class="card-body">
+        <form action="{{ url_for('dig') }}">
+            <div class="form-group row">
+                <label for="inputDomain3" class="col-md-2 col-form-label">Hostname or domain name</label>
+                <div class="col-md-5">
+                    <input type="text" class="form-control" id="inputDomain3" name="hostname" value="{{ inputdata['hostname']  or '' }}" placeholder="example.com or www.example.com">
+                </div>
+            </div>
+            <fieldset class="form-group">
+                <div class="row">
+                    <legend class="col-form-label col-md-2 pt-0">Source server location</legend>
+                    <div class="col-md-10">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sourcelocation" id="edgeipRadios" value="edgeip" {{ 'checked' if inputdata['sourcelocation'] == 'edgeip' }}  >
+                            <label class="form-check-label" for="edgeipRadios">
+                                Edge server IP
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sourcelocation" id="locationRadios" value="location" {{ 'checked' if inputdata['sourcelocation'] == 'location' }}  >
+                            <label class="form-check-label" for="locationRadios">
+                                Location
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="form-group row">
+                <label for="inputEdgeip3" class="col-sm-2 col-form-label"></label>
+                <div class="col-md-5">
+                    <input type="input" class="form-control" id="inputEdgeip3" placeholder="Edgeserver IP" name="ip" value="{{ inputdata['ip'] or '' }}">
+                </div>
+            </div>
+            <div class="form-group row d-none">
+                <label for="inputLocation3" class="col-sm-2 col-form-label"></label>
+                <div class="col-md-5">
+                    <select class="form-control" id="inputLocation3" name="location">
+                        <option value="">Chose Location</option>
+                        {% if locations['locations'] is defined %}
+                        {% for item in locations['locations'] %}
+                        <option value="{{ item.id }}" {% if inputdata['location'] == item.id %} selected {% endif %}> {{ item.value }}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputQuery3" class="col-md-2 col-form-label">Query type</label>
+                <div class="col-md-5">
+                    <select id="inputQuery3" class="form-control" name="query">
+                        <option value="" selected>Choose Query Type</option>
+                        <option value="A">A</option>
+                        <option value="AAAA">AAAA</option>
+                        <option value="SOA">SOA</option>
+                        <option value="CNAME">CNAME</option>
+                        <option value="MX">MX</option>
+                        <option value="PTR">PTR</option>
+                        <option value="NS">NS</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-10">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if data['status'] is defined %}
+<div class="alert alert-primary" role="alert">
+    {{ data }}
+</div>
+{% endif %}
+
+{% if data['digInfo'] is defined %}
+<div class="card mb-3">
+    <div class="card-body">
+     <pre><code>
+        {{ data['digInfo']['result'] }}
+     </code></pre>
+    </div>
+</div>
+{% endif %}
+
+
+{% endblock %}

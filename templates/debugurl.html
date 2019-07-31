@@ -1,0 +1,137 @@
+{% extends "layout.html" %}
+{% block title %}Debug URL{% endblock %}
+{% block breadcrumbactive %}Debug URL{% endblock %}
+{% block debugurl_active %}active{% endblock %}
+
+{% block intro %}
+<!-- Page Content -->
+<h1>Debug URL</h1>
+<hr>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fas fa-chart-area"></i>
+        Debug URL
+    </div>
+    <div class="card-body">
+        <form action="{{ url_for('debugurl') }}">
+            <div class="form-group row">
+                <label for="inputUrl1" class="col-md-2 col-form-label">Hostname or domain name</label>
+                <div class="col-md-5">
+                    <input type="text" class="form-control" id="inputUrl1" name="url" value="{{ inputdata['url']  or '' }}" placeholder="https://www.example.com">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputEdgeip1" class="col-sm-2 col-form-label">Edge server IP</label>
+                <div class="col-md-5">
+                    <input type="input" class="form-control" id="inputEdgeip1" placeholder="Edgeserver IP" name="edgeip" value="{{ inputdata['edgeip'] or ''}}">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputRequestheader1" class="col-sm-2 col-form-label">Request Header</label>
+                <div class="col-md-5">
+                    <input type="input" class="form-control" id="inputRequestheader1" placeholder="Accept: text/html" name="requestheaders">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-10">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if data['link'] is defined %}
+<div class="alert alert-primary" role="alert">
+    Fetching data. Data will be ready in {{ data['retryAfter'] }} seconds.
+    <a href="{{ url_for('debugurl_getdata', requestid=inputdata['requestid']) }}" class="alert-link">Check it out</a>
+</div>
+{% endif %}
+
+{% if data['status'] is defined %}
+<div class="alert alert-primary" role="alert">
+    {{ data }}
+</div>
+{% endif %}
+
+{% if data['urlDebug'] is defined %}
+<div class="card mb-3">
+    <div class="card-body">
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="pills-dns-tab" data-toggle="pill" href="#pills-dns" role="tab" aria-controls="pills-dns" aria-selected="true">DNS Information</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="pills-response-tab" data-toggle="pill" href="#pills-response" role="tab" aria-controls="pills-response" aria-selected="false">HTTP Response</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="pills-headers-tab" data-toggle="pill" href="#pills-headers" role="tab" aria-controls="pills-headers" aria-selected="false">HTTP Headers</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-logs" role="tab" aria-controls="pills-contact" aria-selected="false">Logs</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-dns" role="tabpanel" aria-labelledby="pills-dns-tab">
+                <div class="card">
+                    <div class="card-body">
+                 <pre><code>{% for info in data['urlDebug']['dnsInformation'] %}{{ info }}
+{% endfor %}
+                 </code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="pills-response" role="tabpanel" aria-labelledby="pills-response-tab">
+                <div class="card">
+                    <div class="card-body">
+                 <pre><code>{% for info in data['urlDebug']['httpResponse'] %} {{ info.name }}: {{ info.value }}
+{% endfor %}
+                 </code></pre>
+                    </div>
+                </div>
+
+            </div>
+            <div class="tab-pane fade" id="pills-headers" role="tabpanel" aria-labelledby="pills-headers-tab">
+                <div class="card">
+                    <div class="card-body">
+                 <pre><code>{% for info in data['urlDebug']['responseHeaders'] %}{{ info }}
+{% endfor %}
+                 </code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="pills-logs" role="tabpanel" aria-labelledby="pills-logs-tab">
+                <div id="accordion">
+                    <div class="card">
+                        {% for log_items in data['urlDebug']['logs'] %}
+                        <div class="card-header" id="heading{{ loop.index }}">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapse{{ loop.index }}">
+                                    {{ log_items.description }}
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapse{{ loop.index }}" class="collapse" aria-labelledby="heading{{ loop.index }}" data-parent="#accordion">
+                            <div class="row">
+                                <div class="col-3 ml-4 mt-2">
+                                    {% for key, value in log_items['fields'].items() %}
+                                    <p class="text-right"><strong>{{ key }}:</strong></p>
+                                    {% endfor %}
+                                </div>
+                                <div class="col mt-2">
+                                    {% for key, value in log_items['fields'].items() %}<p>{{ value|safe }}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

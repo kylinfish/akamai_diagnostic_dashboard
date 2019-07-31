@@ -1,0 +1,213 @@
+{% extends "layout.html" %}
+{% block title %}Error Statistics{% endblock %}
+{% block breadcrumbactive %}eStats{% endblock %}
+{% block estats_active %}active{% endblock %}
+{% block intro %}
+<!-- Page Content -->
+<h1>Error Statistics</h1>
+<hr>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fas fa-chart-area"></i>
+        This is Error Statistics tools
+    </div>
+    <div class="card-body">
+        <form action="{{ url_for('estats') }}">
+            <div class="form-row align-items-center">
+                <div class="col-5">
+                    <label class="sr-only" for="inlineFormInput">Name</label>
+                    <input type="text" class="form-control mb-2" id="inlineFormInput" name="cpcode" placeholder="Enter CP Code or URL" value="{{ inputdata['cpcode'] or '' }}">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary mb-2">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if data['link'] is defined %}
+<div class="alert alert-primary" role="alert">
+  Fetching data. Data will be ready in {{ data['retryAfter'] }} seconds.
+    <a href="{{ url_for('estats_getdata', requestid=inputdata['requestid']) }}" class="alert-link">Check it out</a>
+</div>
+{% endif %}
+
+{% if data['status'] is defined %}
+<div class="alert alert-primary" role="alert">
+  {{ data }}
+</div>
+{% endif %}
+
+
+{% if data['eStats'] is defined %}
+<!-- Summary -->
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="fas fa-chart-area"></i>
+                Edge Statistics
+            </div>
+            <div class="card-body">
+                <p class="card-text ">Percent Failure: {{ data['eStats']['edgeFailurePercentage'] }}%</p>
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th scope="col">Status Code</th>
+                        <th scope="col">Hits</th>
+                        <th scope="col">Hits, %</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in data['eStats']['edgeStatusCodeDistribution'] %}
+                    <tr>
+                        <th scope="row">{{ item.httpStatus }}</th>
+                        <td>{{ item.hits }}</td>
+                        <td>{{ item.percentage }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="fas fa-chart-area"></i>
+                Origin Statistics
+            </div>
+            <div class="card-body">
+                <p class="card-text">Percent Failure: {{ data['eStats']['originFailurePercentage'] }}%</p>
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th scope="col">Status Code</th>
+                        <th scope="col">Hits</th>
+                        <th scope="col">Hits, %</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in data['eStats']['originStatusCodeDistribution'] %}
+                    <tr>
+                        <th scope="row">{{ item.httpStatus }}</th>
+                        <td>{{ item.hits }}</td>
+                        <td>{{ item.percentage }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edge errors -->
+
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fas fa-chart-area"></i>
+        Edge Errorrs
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                <tr>
+                    <th>Edge IP</th>
+                    <th>Region</th>
+                    <th>HTTP Status</th>
+                    <th>Hits</th>
+                    <th>Object status</th>
+                    <th>Error Code</th>
+                    <th>Ghost Log</th>
+                </tr>
+                </thead>
+                    <tbody>
+                    {% for item in data['eStats']['topEdgeIpsWithError'] %}
+                    <tr>
+                        <th scope="row">{{ item.edgeIp }}</th>
+                        <td>{{ item.region }}</td>
+                        <td>{{ item.httpStatus }}</td>
+                        <td>{{ item.hits }}</td>
+                        <td>{{ item.objStatus }}</td>
+                        <td>{{ item.errorCode }}</td>
+                        <td><a href="{{ item.edgeLogsLink }}" class="alert-link">View Logs</a></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                <tfoot>
+                <tr>
+                    <th>Edge IP</th>
+                    <th>Region</th>
+                    <th>HTTP Status</th>
+                    <th>Hits</th>
+                    <th>Object status</th>
+                    <th>Error Code</th>
+                    <th>Ghost Log</th>
+                </tr>
+                </tfoot>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Origin errors -->
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fas fa-chart-area"></i>
+        Origin Errorrs
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
+                <thead>
+                <tr>
+                    <th>Edge IP</th>
+                    <th>Region</th>
+                    <th>HTTP Status</th>
+                    <th>Hits</th>
+                    <th>Object status</th>
+                    <th>Error Code</th>
+                    <th>Ghost Log</th>
+                </tr>
+                </thead>
+                    <tbody>
+                    {% for item in data['eStats']['topEdgeIpsWithErrorFromOrigin'] %}
+                    <tr>
+                        <th scope="row">{{ item.edgeIp }}</th>
+                        <td>{{ item.region }}</td>
+                        <td>{{ item.httpStatus }}</td>
+                        <td>{{ item.hits }}</td>
+                        <td>{{ item.objStatus }}</td>
+                        <td>{{ item.errorCode }}</td>
+                        <td><a href="{{ item.edgeLogsLink }}" class="text-info">View Logs</a></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+
+                <tfoot>
+                <tr>
+                    <th>Edge IP</th>
+                    <th>Region</th>
+                    <th>HTTP Status</th>
+                    <th>Hits</th>
+                    <th>Object status</th>
+                    <th>Error Code</th>
+                    <th>Ghost Log</th>
+                </tr>
+                </tfoot>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

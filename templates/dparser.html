@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+{% block title %}Error Translations{% endblock %}
+{% block breadcrumbactive %}Error Translations{% endblock %}
+{% block dparser_active %}active{% endblock %}
+{% block intro %}
+<!-- Page Content -->
+<h1>Error Translations</h1>
+<hr>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fas fa-chart-area"></i>
+        Translate Error String
+    </div>
+    <div class="card-body">
+        <form action="{{ url_for('dparser') }}">
+            <div class="form-row align-items-center">
+                <div class="col-5">
+                    <label class="sr-only" for="inlineFormInput">Name</label>
+                    <input type="text" class="form-control mb-2" id="inlineFormInput" name="errorstring" placeholder="Enter Error String" value="{{ errorstring or '' }}">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary mb-2">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if data['link'] is defined %}
+<div class="alert alert-primary" role="alert">
+    Fetching data. Data will be ready in {{ data['retryAfter'] }} seconds.
+    <a href="{{ url_for('dparser', requestid=data['requestId']) }}" class="alert-link">Check it out</a>
+</div>
+{% endif %}
+
+{% if data['status'] is defined %}
+<div class="alert alert-primary" role="alert">
+    {{ data }}
+</div>
+{% endif %}
+
+{% if data['translatedError'] is defined %}
+<!-- Summary -->
+
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fas fa-chart-area"></i>
+        Summary
+    </div>
+    <div class="card-body">
+        {% for key, value in data['translatedError'].items() %}
+        {% if key != "logs" %}
+        <div class="row">
+            <div class="col-3"><p class="text-right my-0"><strong>{{ key|varnametotitle|capitalize }}:</strong></p></div>
+            <div class="col-8"><p class="my-0"> {{ value|safe }}</p></div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Logs -->
+<div id="accordion">
+    <div class="card">
+        {% for log_items in data['translatedError']['logs'] %}
+        <div class="card-header" id="heading{{ loop.index }}">
+            <h5 class="mb-0">
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapse{{ loop.index }}">
+                    {{ log_items.description }}
+                </button>
+            </h5>
+        </div>
+        <div id="collapse{{ loop.index }}" class="collapse" aria-labelledby="heading{{ loop.index }}" data-parent="#accordion">
+            <div class="card-body">
+                {% for key, value in log_items['fields'].items() %}
+                <div class="row py-0 my-0">
+                    <div class="col-3"><p class="text-right my-0"><strong>{{ key }}:</strong></p></div>
+                    <div class="col-8"><p class="my-0"> {{ value|safe }}</p></div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
